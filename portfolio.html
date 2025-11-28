@@ -3,436 +3,560 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pradyumna Shukla - Portfolio</title>
+    <title>Pradyumna Shukla | Portfolio</title>
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#00F0FF', /* Neon Cyan */
+                        secondary: '#FF003C', /* Neon Red */
+                        dark: '#050505',
+                        glass: 'rgba(255, 255, 255, 0.05)',
+                        surface: 'rgba(255, 255, 255, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary-glow: rgba(0, 255, 255, 0.4);
-            --secondary-glow: rgba(255, 0, 255, 0.4);
-            --bg-color: #0a0a1f;
-        }
-
-        html { scroll-behavior: smooth; }
-
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: #e0e0e0;
+            background-color: #050505;
+            color: #ffffff;
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
-        
-        #matrix-canvas {
+        /* Canvas stays in background */
+        #bg-canvas {
             position: fixed;
-            width: 100%;
-            height: 100%;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
         }
         
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        
-        .gradient-text {
-            background: linear-gradient(90deg, #00ffff, #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00F0FF;
         }
 
-        .glow-shadow { text-shadow: 0 0 12px var(--primary-glow), 0 0 24px var(--secondary-glow); }
-        
+        /* Glassmorphism Utilities */
         .glass-card {
-            background: rgba(18, 18, 48, 0.5);
-            border: 1px solid rgba(0, 255, 255, 0.2);
+            background: rgba(20, 20, 20, 0.6);
             backdrop-filter: blur(12px);
-            transition: all 0.3s ease-in-out;
-            transform-style: preserve-3d;
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
         }
-
         .glass-card:hover {
-            border-color: rgba(0, 255, 255, 0.8);
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
-        }
-        
-        .btn {
-            padding: 14px 32px;
-            border-radius: 9999px;
-            font-weight: 700;
-            transition: all 0.4s ease;
-            transform: perspective(1000px); /* For 3D effects */
+            transform: translateY(-5px);
+            border-color: rgba(0, 240, 255, 0.5);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.15);
+            background: rgba(30, 30, 30, 0.7);
         }
 
-        .btn-primary {
-            background: linear-gradient(90deg, #00ffff, #ff00ff);
-            color: #0d0d2b;
-            box-shadow: 0 0 20px var(--primary-glow);
-        }
-        
-        .btn-primary:hover {
-            color: white;
-            transform: scale(1.05) translateZ(20px);
-            box-shadow: 0 0 30px var(--primary-glow), 0 0 50px var(--secondary-glow);
-        }
-
-        .section-title {
-            position: relative;
-            display: inline-block;
-            padding-bottom: 12px;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, #00ffff, #ff00ff);
-            border-radius: 2px;
-            box-shadow: 0 0 10px var(--primary-glow);
-        }
-
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
-        }
-
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        header {
-            background-color: rgba(10, 10, 31, 0.3);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-        }
-
-        .cursor {
-            display: inline-block;
-            margin-left: 4px;
-            animation: blink 1s step-end infinite;
-            background: linear-gradient(90deg, #00ffff, #ff00ff);
+        .gradient-text {
+            background: linear-gradient(to right, #00F0FF, #0077FF);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 700;
         }
 
-        @keyframes blink {
-          from, to { color: transparent }
-          50% { color: #00ffff; }
+        /* Typing cursor */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
         }
+        @keyframes blink { 50% { opacity: 0; } }
 
-        /* Glitch Effect */
-        .glitch {
-            position: relative;
-            cursor: pointer;
+        /* Icon styling in cards */
+        .card-icon {
+            transition: transform 0.3s ease;
         }
-        .glitch:hover::before, .glitch:hover::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-            overflow: hidden;
-            clip-path: inset(0);
+        .glass-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
         }
-        .glitch:hover::before {
-            left: 2px;
-            text-shadow: -1px 0 var(--secondary-glow);
-            animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
-        }
-        .glitch:hover::after {
-            left: -2px;
-            text-shadow: -1px 0 var(--primary-glow), 2px 2px var(--secondary-glow);
-            animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim-1 {
-            0% { clip-path: inset(34% 0 60% 0); } 10% { clip-path: inset(8% 0 85% 0); } 20% { clip-path: inset(45% 0 35% 0); } 30% { clip-path: inset(23% 0 10% 0); } 40% { clip-path: inset(70% 0 20% 0); } 50% { clip-path: inset(90% 0 5% 0); } 60% { clip-path: inset(40% 0 55% 0); } 70% { clip-path: inset(20% 0 75% 0); } 80% { clip-path: inset(65% 0 10% 0); } 90% { clip-path: inset(0 0 100% 0); } 100% { clip-path: inset(50% 0 40% 0); }
-        }
-        @keyframes glitch-anim-2 {
-            0% { clip-path: inset(80% 0 10% 0); } 10% { clip-path: inset(0 0 100% 0); } 20% { clip-path: inset(60% 0 30% 0); } 30% { clip-path: inset(80% 0 5% 0); } 40% { clip-path: inset(40% 0 45% 0); } 50% { clip-path: inset(20% 0 70% 0); } 60% { clip-path: inset(95% 0 2% 0); } 70% { clip-path: inset(35% 0 55% 0); } 80% { clip-path: inset(10% 0 88% 0); } 90% { clip-path: inset(70% 0 25% 0); } 100% { clip-path: inset(40% 0 50% 0); }
-        }
-
     </style>
 </head>
 <body class="antialiased">
-    <canvas id="matrix-canvas"></canvas>
 
-    <!-- Header -->
-    <header class="fixed w-full z-30 p-4 transition duration-300">
-        <div class="container mx-auto flex justify-between items-center relative">
-            <a href="#hero" class="text-3xl font-orbitron font-bold gradient-text glow-shadow">PS</a>
-            <nav class="hidden md:flex absolute left-1/2 -translate-x-1/2 space-x-8 text-lg">
-                <a href="#about" class="hover:text-cyan-300 transition duration-300">About</a>
-                <a href="#skills" class="hover:text-cyan-300 transition duration-300">Skills</a>
-                <a href="#projects" class="hover:text-cyan-300 transition duration-300">Projects</a>
-            </nav>
-            <div class="hidden md:block">
-                <a href="#contact" class="font-bold border-2 border-cyan-400 text-cyan-400 py-2 px-6 rounded-lg hover:bg-cyan-400 hover:text-bg-color transition duration-300">
-                    Contact
+    <!-- Canvas for Animation -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 left-0 border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold tracking-tighter text-white">
+                PRADYUMNA<span class="text-primary"> SHUKLA</span>
+            </a>
+            <div class="hidden md:flex space-x-8 text-sm font-semibold tracking-wide">
+                <a href="#about" class="hover:text-primary transition-colors">ABOUT</a>
+                <a href="#featured" class="hover:text-primary transition-colors">WORK</a>
+                <a href="#projects" class="hover:text-primary transition-colors">PROJECTS</a>
+                <a href="#contact" class="px-5 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-black transition-all">HIRE ME</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative px-6 pt-20">
+        <div class="max-w-4xl text-center z-10">
+            <div class="inline-block px-4 py-1 mb-6 border border-primary/30 rounded-full bg-primary/10 text-primary text-sm tracking-widest uppercase animate-pulse">
+                Open to Opportunities
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                Computer Engineering <br />
+                <span class="gradient-text typing-cursor">Student & Innovator</span>
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+                Building the future with code. Specialized in Full Stack Development, Mobile Apps, and AI Solutions.
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="#featured" class="px-8 py-4 bg-primary text-black font-bold rounded-lg hover:bg-white hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] transition-all transform hover:scale-105">
+                    View My Work
+                </a>
+                <a href="https://github.com/pradyumnashukla08" target="_blank" class="px-8 py-4 border border-white/20 bg-white/5 backdrop-blur-sm rounded-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://www.linkedin.com/in/pradyumna-shukla-917188287" target="_blank" class="px-8 py-4 border border-blue-500/30 bg-blue-500/10 backdrop-blur-sm rounded-lg hover:bg-blue-500/20 text-blue-400 transition-all flex items-center justify-center gap-2">
+                    <i class="fab fa-linkedin"></i> LinkedIn
                 </a>
             </div>
         </div>
-    </header>
+    </section>
 
-    <main class="container mx-auto px-4 pt-24 relative z-10">
+    <!-- About Section (New) -->
+    <section id="about" class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">
+                <span class="border-b-4 border-primary pb-2">About Me</span>
+            </h2>
+            <div class="glass-card p-8 md:p-12 rounded-2xl flex flex-col md:flex-row items-center gap-12">
+                
+                <!-- Profile Image with Glow Effect -->
+                <div class="relative shrink-0 group">
+                    <!-- Animated Glow Background -->
+                    <div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                    <!-- Image Container -->
+                    <div class="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-black shadow-2xl bg-black">
+                        <!-- 
+                             IMPORTANT: 
+                             When you save this file, change the 'src' below to your image filename:
+                             src="WhatsApp Image 2025-11-27 at 16.00.16_4bc40c8c.jpg" 
+                        -->
+                        <img src="Gemini_Generated_Image_hzduvthzduvthzdu.png" alt="Pradyumna Shukla" class="w-full h-full object-cover transform transition duration-500 group-hover:scale-110">
+                    </div>
+                </div>
 
-        <!-- Hero Section -->
-        <section id="hero" class="min-h-screen flex items-center justify-center text-center -mt-24">
-            <div class="max-w-4xl">
-                <h1 class="text-5xl md:text-7xl font-orbitron font-bold mb-4 gradient-text glow-shadow glitch" data-text="Pradyumna Shukla">
-                    Pradyumna Shukla
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-300 mb-8 fade-in-up h-8" style="transition-delay: 0.2s;">
-                    <span id="typewriter"></span><span class="cursor">|</span>
-                </p>
-                <div class="flex justify-center gap-6 fade-in-up" style="transition-delay: 0.4s;">
-                    <a href="https://www.linkedin.com/in/pradyumna-shukla" target="_blank" class="btn btn-primary">Go to LinkedIn</a>
+                <!-- Text Content -->
+                <div class="text-left flex-grow">
+                    <p class="text-lg md:text-xl text-gray-300 leading-relaxed mb-6">
+                        Hello! I'm <strong class="text-white">Pradyumna Shukla</strong>, a Computer Engineering undergraduate at <span class="text-primary">Universal College of Engineering</span> (Class of 2027) based in Nallasopara, Maharashtra.
+                    </p>
+                    <p class="text-lg md:text-xl text-gray-300 leading-relaxed mb-6">
+                        With a CGPA of <strong class="text-primary">8.23</strong>, I combine academic excellence with a relentless drive to build. I don't just write code; I create solutions. From launching my own real estate startup, <strong class="text-white">Avas</strong>, to optimizing city transit systems for national hackathons, I love tackling complex problems using <span class="text-secondary">Java, Python, and Flutter</span>.
+                    </p>
+                    <p class="text-lg md:text-xl text-gray-300 leading-relaxed">
+                        I am constantly learning and currently exploring the intersection of Data Science and Mobile Application development to build smarter, more accessible technology for everyone.
+                    </p>
+                    
+                    <!-- Quick Stats/Badges -->
+                    <div class="flex flex-wrap gap-4 mt-6">
+                         <span class="px-4 py-2 bg-white/5 rounded-full border border-white/10 text-sm text-primary flex items-center gap-2">
+                            <i class="fas fa-code"></i> Full Stack Dev
+                        </span>
+                        <span class="px-4 py-2 bg-white/5 rounded-full border border-white/10 text-sm text-secondary flex items-center gap-2">
+                            <i class="fas fa-mobile-alt"></i> Flutter Expert
+                        </span>
+                         <span class="px-4 py-2 bg-white/5 rounded-full border border-white/10 text-sm text-green-400 flex items-center gap-2">
+                            <i class="fas fa-rocket"></i> Founder
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Work (Startup + Kochi Metro) -->
+    <section id="featured" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-16 text-center">
+                <span class="border-b-4 border-primary pb-2">Featured Work</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                
+                <!-- Project 1: Avas (Startup) - LINKED -->
+                <a href="https://avasplot.in" target="_blank" class="glass-card rounded-2xl p-8 relative overflow-hidden group flex flex-col h-full hover:cursor-pointer">
+                    <div class="absolute top-0 right-0 bg-primary text-black text-xs font-bold px-4 py-1 rounded-bl-xl group-hover:bg-white transition-colors">
+                        VISIT SITE <i class="fas fa-external-link-alt ml-1"></i>
+                    </div>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-primary/20 rounded-full flex items-center justify-center text-primary text-2xl card-icon group-hover:bg-primary group-hover:text-black transition-colors">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold group-hover:text-primary transition-colors">Avas</h3>
+                    </div>
+                    <p class="text-gray-400 mb-6 leading-relaxed flex-grow">
+                        Founder & Lead Developer of <strong>avasplot.in</strong>. A comprehensive real-estate platform solving the plot discovery problem. Features include dynamic property listing, verified agent profiles, user authentication, and a responsive UI.
+                    </p>
+                    <div class="flex flex-wrap gap-2 pt-4 border-t border-white/10">
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-xs text-primary border border-primary/20">Full Stack</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-xs text-primary border border-primary/20">Live Product</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-xs text-primary border border-primary/20">Business Logic</span>
+                    </div>
+                </a>
+
+                <!-- Project 2: Kochi Metro (SIH Project) - LINKED TO GITHUB REPOS -->
+                <a href="https://github.com/pradyumnashukla08?tab=repositories" target="_blank" class="glass-card rounded-2xl p-8 relative overflow-hidden group flex flex-col h-full hover:cursor-pointer">
+                    <div class="absolute top-0 right-0 bg-secondary text-white text-xs font-bold px-4 py-1 rounded-bl-xl group-hover:bg-white group-hover:text-secondary transition-colors">
+                        VIEW CODE <i class="fab fa-github ml-1"></i>
+                    </div>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center text-secondary text-2xl card-icon group-hover:bg-secondary group-hover:text-white transition-colors">
+                            <i class="fas fa-train-subway"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold group-hover:text-secondary transition-colors">Kochi Metro Smart Transit</h3>
+                    </div>
+                    <p class="text-gray-400 mb-6 leading-relaxed flex-grow">
+                        Developed a smart crowd management and ticketing optimization system for Kochi Metro. The solution utilizes real-time data analysis to reduce congestion and improve commuter flow, pitched for the Smart India Hackathon 2025.
+                    </p>
+                    <div class="flex flex-wrap gap-2 pt-4 border-t border-white/10">
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-xs text-secondary border border-secondary/20">Optimization</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-xs text-secondary border border-secondary/20">Smart City</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-xs text-secondary border border-secondary/20">Team Lead</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Complete Project List (Grid Layout) -->
+    <section id="projects" class="py-20 px-6 bg-black/50">
+        <div class="max-w-7xl mx-auto">
+            <h3 class="text-3xl font-bold mb-12 text-center text-white">Project Archive & Skills</h3>
+            <div class="flex flex-col lg:flex-row gap-12">
+                
+                <!-- Left: Skills & Education Card -->
+                <div class="w-full lg:w-1/3 flex flex-col gap-6">
+                    
+                    <!-- Skills Card -->
+                    <div class="glass-card p-6 rounded-xl">
+                        <h4 class="text-xl font-bold mb-6 text-primary flex items-center gap-2">
+                            <i class="fas fa-code"></i> Technical Skills
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-2 bg-white/5 border border-white/10 rounded text-sm hover:border-primary transition-colors cursor-default">Java (Basic)</span>
+                            <span class="px-3 py-2 bg-white/5 border border-white/10 rounded text-sm hover:border-primary transition-colors cursor-default">Python (Basic)</span>
+                            <span class="px-3 py-2 bg-white/5 border border-white/10 rounded text-sm hover:border-primary transition-colors cursor-default">C / C++</span>
+                            <span class="px-3 py-2 bg-white/5 border border-white/10 rounded text-sm hover:border-primary transition-colors cursor-default">HTML/CSS/JS</span>
+                            <span class="px-3 py-2 bg-white/5 border border-white/10 rounded text-sm hover:border-primary transition-colors cursor-default">MySQL</span>
+                            <span class="px-3 py-2 bg-white/5 border border-white/10 rounded text-sm hover:border-primary transition-colors cursor-default">Flutter</span>
+                            <span class="px-3 py-2 bg-white/5 border border-white/10 rounded text-sm hover:border-primary transition-colors cursor-default">Git</span>
+                        </div>
+                    </div>
+
+                    <!-- Education Card -->
+                    <div class="glass-card p-6 rounded-xl flex-grow">
+                        <h4 class="text-xl font-bold mb-6 text-primary flex items-center gap-2">
+                            <i class="fas fa-graduation-cap"></i> Education
+                        </h4>
+                        <div class="space-y-6">
+                            <div class="relative pl-6 border-l-2 border-white/10">
+                                <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary/20 border border-primary"></div>
+                                <p class="text-white font-bold text-lg">B.E. Computer Engineering</p>
+                                <p class="text-gray-400 text-sm">Universal College of Engineering (2027)</p>
+                                <p class="text-primary text-sm mt-1">CGPA: 8.23</p>
+                            </div>
+                            <div class="relative pl-6 border-l-2 border-white/10">
+                                <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white/10 border border-white/30"></div>
+                                <p class="text-white font-bold">HSC (12th)</p>
+                                <p class="text-gray-400 text-sm">74%</p>
+                            </div>
+                            <div class="relative pl-6 border-l-2 border-white/10">
+                                <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white/10 border border-white/30"></div>
+                                <p class="text-white font-bold">SSC (10th)</p>
+                                <p class="text-gray-400 text-sm">83.20%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right: All Projects Grid -->
+                <div class="w-full lg:w-2/3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Card Manager (From Resume) -->
+                        <a href="https://github.com/pradyumnashukla08?tab=repositories" target="_blank" class="glass-card p-6 rounded-xl hover:bg-white/5 group block relative">
+                            <div class="absolute top-4 right-4 text-gray-600 group-hover:text-secondary transition-colors"><i class="fab fa-github"></i></div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center text-secondary text-xl card-icon">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-6">Mobile App</span>
+                            </div>
+                            <h4 class="font-bold text-lg text-white mb-2 group-hover:text-primary transition-colors">Card Manager App</h4>
+                            <p class="text-sm text-gray-400 mb-4 line-clamp-3">A cross-platform mobile application for managing credit card details and reminders. Built with Flutter & Supabase.</p>
+                            <span class="text-xs text-secondary bg-secondary/10 px-2 py-1 rounded">Flutter</span>
+                        </a>
+
+                        <!-- Stock Trends -->
+                        <a href="https://github.com/pradyumnashukla08?tab=repositories" target="_blank" class="glass-card p-6 rounded-xl hover:bg-white/5 group block relative">
+                            <div class="absolute top-4 right-4 text-gray-600 group-hover:text-primary transition-colors"><i class="fab fa-github"></i></div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary text-xl card-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-6">Data Science</span>
+                            </div>
+                            <h4 class="font-bold text-lg text-white mb-2 group-hover:text-primary transition-colors">Stock Trends Analyzer</h4>
+                            <p class="text-sm text-gray-400 mb-4 line-clamp-3">Visual stock analysis tool providing insights into market trends using Pandas, Matplotlib, and yfinance.</p>
+                            <span class="text-xs text-primary bg-primary/10 px-2 py-1 rounded">Python</span>
+                        </a>
+
+                        <!-- Inventory Management -->
+                        <a href="https://github.com/pradyumnashukla08?tab=repositories" target="_blank" class="glass-card p-6 rounded-xl hover:bg-white/5 group block relative">
+                            <div class="absolute top-4 right-4 text-gray-600 group-hover:text-blue-400 transition-colors"><i class="fab fa-github"></i></div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 text-xl card-icon">
+                                    <i class="fas fa-boxes"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-6">Desktop App</span>
+                            </div>
+                            <h4 class="font-bold text-lg text-white mb-2 group-hover:text-primary transition-colors">Inventory Management</h4>
+                            <p class="text-sm text-gray-400 mb-4 line-clamp-3">Tkinter app to manage stock, sales, and automate restocking. Uses SQLite for efficient data storage.</p>
+                            <span class="text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded">Python + SQLite</span>
+                        </a>
+
+                        <!-- Jarvis -->
+                        <a href="https://github.com/pradyumnashukla08?tab=repositories" target="_blank" class="glass-card p-6 rounded-xl hover:bg-white/5 group block relative">
+                            <div class="absolute top-4 right-4 text-gray-600 group-hover:text-purple-400 transition-colors"><i class="fab fa-github"></i></div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-400 text-xl card-icon">
+                                    <i class="fas fa-microphone"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-6">Automation</span>
+                            </div>
+                            <h4 class="font-bold text-lg text-white mb-2 group-hover:text-primary transition-colors">Jarvis Assistant</h4>
+                            <p class="text-sm text-gray-400 mb-4 line-clamp-3">Basic voice-command tool for automation tasks like opening apps or browsing the web.</p>
+                            <span class="text-xs text-purple-400 bg-purple-500/10 px-2 py-1 rounded">Python Scripting</span>
+                        </a>
+
+                         <!-- Food Rec Site -->
+                         <a href="https://github.com/pradyumnashukla08?tab=repositories" target="_blank" class="glass-card p-6 rounded-xl hover:bg-white/5 group block relative">
+                            <div class="absolute top-4 right-4 text-gray-600 group-hover:text-orange-400 transition-colors"><i class="fab fa-github"></i></div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 bg-orange-500/10 rounded-lg flex items-center justify-center text-orange-400 text-xl card-icon">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-6">Web App</span>
+                            </div>
+                            <h4 class="font-bold text-lg text-white mb-2 group-hover:text-primary transition-colors">Food Recommendation</h4>
+                            <p class="text-sm text-gray-400 mb-4 line-clamp-3">Front-end web application recommending dishes based on user preferences.</p>
+                            <span class="text-xs text-orange-400 bg-orange-500/10 px-2 py-1 rounded">HTML/CSS/JS</span>
+                        </a>
+
+                         <!-- ATM System -->
+                         <a href="https://github.com/pradyumnashukla08?tab=repositories" target="_blank" class="glass-card p-6 rounded-xl hover:bg-white/5 group block relative">
+                            <div class="absolute top-4 right-4 text-gray-600 group-hover:text-green-400 transition-colors"><i class="fab fa-github"></i></div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center text-green-400 text-xl card-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-6">Console App</span>
+                            </div>
+                            <h4 class="font-bold text-lg text-white mb-2 group-hover:text-primary transition-colors">ATM Bank System</h4>
+                            <p class="text-sm text-gray-400 mb-4 line-clamp-3">Robust console-based banking operations with deposit, withdrawal & balance inquiry features.</p>
+                            <span class="text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded">Java</span>
+                        </a>
+
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- About Section -->
-        <section id="about" class="py-24">
-            <div class="max-w-4xl mx-auto text-center fade-in-up glass-card p-10 rounded-2xl">
-                <h2 class="section-title text-4xl font-orbitron font-bold mb-12">Mission Briefing</h2>
-                <p class="text-lg leading-relaxed text-gray-300">
-                    I am an aspiring tech entrepreneur and software developer on a mission to engineer the future. Specializing in full-stack and mobile solutions, I'm also architecting a new ecosystem in construction and real estate. My core objective is to fuse cutting-edge technology with industry to forge revolutionary ventures. I'm actively seeking collaborators to innovate in fintech, real estate, or any other paradigm-shifting space.
-                </p>
-            </div>
-        </section>
+    <!-- Footer / Contact -->
+    <section id="contact" class="py-20 text-center relative z-10">
+        <h2 class="text-4xl font-bold mb-6">Let's Build The Future</h2>
+        <p class="text-gray-400 mb-8">Ready to turn ideas into deployed reality.</p>
+        <div class="flex flex-col items-center gap-4">
+             <a href="mailto:pradyumnashukla08@gmail.com" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-primary transition-colors">
+                <i class="fas fa-paper-plane"></i> pradyumnashukla08@gmail.com
+            </a>
+            <p class="text-gray-400">+91-9224820095</p>
+        </div>
+       
+        <div class="mt-12 flex justify-center gap-8 text-2xl text-gray-500">
+            <a href="https://github.com/pradyumnashukla08" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-github"></i></a>
+            <a href="https://linkedin.com/in/pradyumna-shukla-917188287" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-linkedin"></i></a>
+        </div>
+        <div class="mt-8 text-sm text-gray-600">
+            &copy; 2025 Pradyumna Shukla. Nallasopara, Mumbai.
+        </div>
+    </section>
 
-        <!-- Skills Section -->
-        <section id="skills" class="py-24">
-            <div class="max-w-5xl mx-auto text-center fade-in-up">
-                <h2 class="section-title text-4xl font-orbitron font-bold mb-12">Skill Matrix</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                    <!-- Skills will be populated here by JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects" class="py-24">
-             <div class="max-w-5xl mx-auto text-center fade-in-up">
-                <h2 class="section-title text-4xl font-orbitron font-bold mb-12">Active Protocols</h2>
-                <div class="grid md:grid-cols-2 gap-8" id="project-grid">
-                    <!-- Projects will be populated here by JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="py-24 text-center fade-in-up">
-            <div class="max-w-3xl mx-auto glass-card p-10 rounded-2xl">
-                <h2 class="section-title text-4xl font-orbitron font-bold mb-8">Establish Connection</h2>
-                <p class="text-lg text-gray-300 mb-8">
-                    I am seeking high-value internship opportunities and am receptive to new project proposals and collaborations. If your mission aligns with innovation and progress, let's interface.
-                </p>
-                <a href="mailto:pradyumnashukla08@gmail.com" class="btn btn-primary text-xl">Transmit Signal</a>
-            </div>
-        </section>
-
-    </main>
-    
-    <footer class="text-center py-8 border-t border-gray-800/50">
-        <p>&copy; 2025 Pradyumna Shukla // System Online</p>
-    </footer>
-
+    <!-- Canvas Animation Script -->
     <script>
-        // Interactive Digital Constellation Effect
-        const canvas = document.getElementById('matrix-canvas');
+        const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
-        let particles = [];
+
+        let particlesArray;
+
+        // Set canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        // Mouse interaction
         const mouse = {
             x: null,
             y: null,
             radius: 150
-        };
+        }
 
-        window.addEventListener('mousemove', event => {
+        window.addEventListener('mousemove', (event) => {
             mouse.x = event.x;
             mouse.y = event.y;
         });
 
-        window.addEventListener('mouseout', () => {
-            mouse.x = null;
-            mouse.y = null;
-        });
+        // Particle Class
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
 
-        function setup() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
-            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 15000);
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                // Boundary check
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+
+                // Collision detection with mouse
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+
+                if (distance < mouse.radius + this.size) {
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) {
+                        this.x += 2; // Move away from mouse
+                    }
+                    if (mouse.x > this.x && this.x > this.size * 10) {
+                        this.x -= 2;
+                    }
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) {
+                        this.y += 2;
+                    }
+                    if (mouse.y > this.y && this.y > this.size * 10) {
+                        this.y -= 2;
+                    }
+                }
+
+                // Move particle
+                this.x += this.directionX;
+                this.y += this.directionY;
+
+                this.draw();
+            }
+        }
+
+        // Initialize Particles
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
             
             for (let i = 0; i < numberOfParticles; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
-                    size: Math.random() * 2 + 1
-                });
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 2) - 1; // Speed between -1 and 1
+                let directionY = (Math.random() * 2) - 1;
+                let color = '#00F0FF'; // Neon Cyan
+
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
             }
         }
 
-        function draw() {
-            ctx.fillStyle = 'rgba(10, 10, 31, 1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
 
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
 
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(0, 255, 255, 0.8)';
-                ctx.fill();
-            });
-
-            ctx.beginPath();
-            for (let i = 0; i < particles.length; i++) {
-                // Lines between particles
-                for (let j = i; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 120) {
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(0, 255, 255, ${1 - distance / 120})`;
-                    }
-                }
-                // Lines to mouse
-                if (mouse.x !== null) {
-                    const dx = particles[i].x - mouse.x;
-                    const dy = particles[i].y - mouse.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < mouse.radius) {
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(mouse.x, mouse.y);
-                        ctx.strokeStyle = `rgba(0, 255, 255, ${1 - distance / mouse.radius})`;
+        // Draw lines between particles
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    
+                    if (distance < (canvas.width/7) * (canvas.height/7)) {
+                        opacityValue = 1 - (distance/20000);
+                        ctx.strokeStyle = 'rgba(0, 240, 255,' + opacityValue + ')';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
                     }
                 }
             }
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-            
-            requestAnimationFrame(draw);
         }
 
-        window.addEventListener('resize', setup);
-        
-        setup();
-        draw();
-
-
-        // Scroll animation logic
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
-        
-        // 3D Tilt Effect
-        function applyTilt(el) {
-            const height = el.clientHeight;
-            const width = el.clientWidth;
-            el.addEventListener('mousemove', (e) => {
-                const { layerX, layerY } = e;
-                const yRotation = ((layerX - width / 2) / width) * 20;
-                const xRotation = ((layerY - height / 2) / height) * -20;
-                const string = `perspective(500px) scale(1.03) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
-                el.style.transform = string;
-            });
-            el.addEventListener('mouseout', () => {
-                el.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
-            });
-        }
-
-        // Typewriter Effect
-        document.addEventListener("DOMContentLoaded", function() {
-            const typewriterElement = document.getElementById('typewriter');
-            const words = ["Software Developer", "Tech Entrepreneur", "Real Estate Visionary"];
-            let wordIndex = 0; let charIndex = 0; let isDeleting = false;
-            const typingSpeed = 100, erasingSpeed = 50, delayBetweenWords = 1500;
-
-            function type() {
-                const currentWord = words[wordIndex];
-                if (isDeleting) {
-                    typewriterElement.textContent = currentWord.substring(0, charIndex - 1);
-                    charIndex--;
-                } else {
-                    typewriterElement.textContent = currentWord.substring(0, charIndex + 1);
-                    charIndex++;
-                }
-                if (!isDeleting && charIndex === currentWord.length) {
-                    setTimeout(() => isDeleting = true, delayBetweenWords);
-                } else if (isDeleting && charIndex === 0) {
-                    isDeleting = false;
-                    wordIndex = (wordIndex + 1) % words.length;
-                }
-                const speed = isDeleting ? erasingSpeed : typingSpeed;
-                setTimeout(type, speed);
-            }
-            setTimeout(type, 800);
-        });
-        
-        // Dynamic Content Injection
-        const skillsData = [
-            { name: "Python", desc: "Backend & Automation", icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-300"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M12 10.5v.5a2 2 0 1 0 4 0v-.5a2 2 0 1 0-4 0z"></path><path d="M12 15.5v-.5a2 2 0 1 1-4 0v.5a2 2 0 1 1 4 0z"></path></svg>` },
-            { name: "Unity", desc: "Mobile & AR/VR Apps", icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-300"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>` },
-            { name: "Firebase", desc: "Real-time Databases", icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-300"><path d="M4.62 16.32a3.25 3.25 0 0 0 0 4.6l.04.04a3.25 3.25 0 0 0 4.6 0L12 18.25l2.74 2.73a3.25 3.25 0 0 0 4.6 0l.04-.04a3.25 3.25 0 0 0 0-4.6L16.5 13.5 12 18.25l-4.5-4.5L4.62 16.32z"></path><path d="M19.38 7.68a3.25 3.25 0 0 0 0-4.6l-.04-.04a3.25 3.25 0 0 0-4.6 0L12 5.75 9.26 3.02a3.25 3.25 0 0 0-4.6 0l-.04.04a3.25 3.25 0 0 0 0 4.6L7.5 10.5 12 5.75l4.5 4.5 2.88-2.82z"></path></svg>` },
-            { name: "React.js", desc: "Interactive UIs", icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-300"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>` },
-            { name: "Business Strategy", desc: "Startup Scaling", icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-300"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>` },
-            { name: "Real Estate", desc: "Market Development", icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-300"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>` },
-            { name: "Startup Building", desc: "Idea to Execution", icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-300"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.3.05-3.05A7.74 7.74 0 0 0 9 9c.75-.65 2.21-.66 3.05.05.75.75 2.21.75 3.05.05.75-.75 2.21-.75 3.05.05.75.75 2.21.75 3.05.05A7.74 7.74 0 0 0 21 9c.75-.65 2.21-.66 3.05.05.75.75 2.21.75 3.05.05.75-.75 2.21-.75 3.05.05s.5 3.74-2 5c-1.26 1.5-5 2-5 2s.5-3.74 2-5c.71-.84.7-2.3.05-3.05A7.74 7.74 0 0 0 15 9c-.75.65-2.21.66-3.05-.05-.75-.75-2.21-.75-3.05-.05-.75.75-2.21.75-3.05-.05A7.74 7.74 0 0 0 9 9c-.75.65-2.21.66-3.05-.05A7.74 7.74 0 0 0 4.5 16.5z"></path></svg>` },
-            { name: "Problem-Solving", desc: "Analytical Thinking", icon: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-300"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"></path></svg>` }
-        ];
-
-        const projectsData = [
-            { title: "Fintech Card Manager", desc: "A secure Unity-based application for seamless management of personal banking cards." },
-            { title: "BSE Stock Analyzer", desc: "An advanced tool for tracking and analyzing stocks on the Bombay Stock Exchange." },
-            { title: "Real Estate Platform", desc: "A comprehensive listing platform for land transactions, built with React.js and Firebase." },
-            { title: "Industrial Vision", desc: "Long-term plans for launching manufacturing, polymer, and garment factories." }
-        ];
-
-        const skillsContainer = document.querySelector('#skills .grid');
-        skillsData.forEach(skill => {
-            const skillEl = document.createElement('div');
-            skillEl.className = 'glass-card p-6 text-center rounded-xl flex flex-col items-center justify-start';
-            skillEl.innerHTML = `
-                <div class="mb-4 h-12 w-12">${skill.icon}</div>
-                <h3 class="text-xl font-bold mb-2 gradient-text">${skill.name}</h3>
-                <p class="text-gray-400">${skill.desc}</p>`;
-            skillsContainer.appendChild(skillEl);
-            applyTilt(skillEl);
-        });
-
-        const projectsContainer = document.getElementById('project-grid');
-        projectsData.forEach(project => {
-            const projectEl = document.createElement('div');
-            projectEl.className = 'glass-card p-8 text-left rounded-xl';
-            projectEl.innerHTML = `<h3 class="text-2xl font-bold font-orbitron mb-3">${project.title}</h3><p class="text-gray-400">${project.desc}</p>`;
-            projectsContainer.appendChild(projectEl);
-            applyTilt(projectEl);
-        });
+        // Start everything
+        init();
+        animate();
     </script>
 </body>
 </html>
-
